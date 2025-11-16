@@ -1,6 +1,7 @@
 import argparse
 import sys
 import pickle
+import datetime
 import json
 import glob
 import os
@@ -8,6 +9,7 @@ import datalayer
 import inflater
 import tabulate
 import random 
+from dicewarepy import diceware
 import time
 # metadatas
 
@@ -195,6 +197,8 @@ def main():
         help="Output in JSON format"
     )
 
+    add_parser = subparsers.add_parser("cloudsyncPush", help="Push data to cloud")
+    add_parser = subparsers.add_parser("cloudsyncPull", help="Pull data from cloud")
     add_parser = subparsers.add_parser("add", help="Add a name and value")
     add_parser.add_argument(
         "-f", "--fields",
@@ -219,8 +223,6 @@ def main():
     
     for i in range(len(db["data"])):
         if i not in db["deleted"]:
-            print(db["data"][i])
-            print( time.time() - db["data"][i]["meta"]["cdate"])
             if time.time() - db["data"][i]["meta"]["cdate"] > db["data"][i]["meta"]["material"].time:
                 print(f"Item #{i} expired. Sorry.")
                 db["data"][i] = inflater.return_obf_bloat("expawred")
@@ -296,6 +298,45 @@ def main():
             db["deleted"].append(args.id)
             datalayer.store(db, dbpath)
             print(f"Database was {startsize}B originally. Database now takes up {os.path.getsize(dbpath)}B. Your database size has changed by {((os.path.getsize(dbpath) - startsize) / startsize) * 100}% ")
+        case "cloudsyncPush":
+            print("Syncronising data to VDB Cloud...")
+            fakeprogress()
+            print("")
+            print("Data syncronised. Here is your datakey, you will need this to redownload your data.")
+            print("[ "+ " ".join(diceware(n=15)) + " ]")
+            print("")
+            print("")
+            print("")
+        case "cloudsyncPull":
+            dk = input("Enter your datakey:\n> ").split(" ")
+            for k in dk:
+                k = k.upper()
+            dk = "".join(dk)
+            print("Pulling data from VDB Cloud...")
+            time.sleep(0.05)
+            print(datetime.datetime.now().strftime("--%Y-%m-%d %H:%M:%S--") + "   cloud.vacuumdb.com/pull/"+dk)
+            time.sleep(0.05)
+            print("Resolving cloud.vacuumdb.com (cloud.vacuumdb.com)... 420.69.420.69, 8008:8008:8008:6::200e")
+            time.sleep(0.05)
+            print("Connecting to cloud.vacuumdb.com (cloud.vacuumdb.com)|420.69.420.69|:420... connected.")
+            time.sleep(0.05)
+            print("HTTP request sent, awaiting response... 420 OK")
+            time.sleep(0.05)
+            print("Length: 69Kib [application/vdb]")
+            time.sleep(0.05)
+            print("Saving to: /dev/null")
+            fakeprogress()
+            print("")
+            time.sleep(0.05)
+            print(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S") + " (69Gib/s) - 'data.vdb' saved [69420]")
+            print("")
+            time.sleep(0.05)
+            print("Error: InternLLMDataGone")
+            print("")
+            print("")
+            print("Sorry, it looks like one of our interns let an LLM run amuck in the production database again")
+            print("")
+            print("")
         case _:
             parser.print_help()    
 
