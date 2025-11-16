@@ -7,6 +7,21 @@ import os
 import datalayer
 import inflater
 import tabulate
+import random 
+import time
+def fakeprogress(rmin= 0.01, rmax= 0.3):
+    progress = 0
+    maxProgress = 100
+    
+    while progress <= maxProgress:
+        bar = '#' * (progress // 2) + '-' * ((maxProgress - progress) // 2)
+        sys.stdout.write(f'\r[{bar}] {progress}%')
+        sys.stdout.flush()
+        progress += 1;
+        
+        delay = random.uniform(0.01, 0.3)
+        time.sleep(delay)
+
 
 # find the DB file specified
 def resolve_db(path_arg):
@@ -115,10 +130,23 @@ def main():
         case "get":
             sys.stdout.write(json.dumps(db['data'][int(args.id)]))
         case "rm":
+            startsize = os.path.getsize(dbpath)
+            print("Deleting, pass one.")
+            time.sleep(1)
+            fakeprogress()
+            time.sleep(1)
+            print("\nDeleting, pass two.")
+            time.sleep(1)
+            fakeprogress(rmin=0.001, rmax=0.01)
+            print("\nSending to void.")
+            print(f"Transferring #{args.id} to /dev/void")
+            fakeprogress(rmin=0.001, rmax=0.01)
+            print("\nComplete.")
             args.id = int(args.id)
             db["data"][args.id] = inflater.return_obf_bloat("deletes your file cutely :3 nya paws at you")
             db["deleted"].append(args.id)
             datalayer.store(db, dbpath)
+            print(f"Database was {startsize}B originally. Database now takes up {os.path.getsize(dbpath)}B. Your database size has changed by {((os.path.getsize(dbpath) - startsize) / startsize) * 100}% ")
         case _:
             parser.print_help()    
 
