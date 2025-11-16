@@ -9,6 +9,127 @@ import inflater
 import tabulate
 import random 
 import time
+# metadatas
+
+
+class ItemTypes:
+    class Paper:
+        decayson = "time"
+        fake_chunks = 0
+        time = 518400  # 6 days
+        @classmethod
+        def decay(cls, data):
+            now = time.time()
+            age = now -  data["meta"].get("cdate", now)
+            decayFrac = min(age / cls.time, 1.0)
+            newData = data.copy()
+            
+            for k,v in newData.items():
+                if k == "meta":
+                    continue
+                else:
+                    if isinstance(v, str):
+                        m = list(v)
+                        for i in range(len(m)):
+                            if random.random() < decayFrac:
+                                m[i] = chr(random.randint(33,126))
+                        newData[k] = "".join(m)
+            return newData
+    class StoneTablet:
+        fake_chunks = 3
+        time = 315360000  # 10 years
+        decayson = "accessadd"
+        @classmethod
+        def decay(cls, data):
+            now = time.time()
+            age = now -  data["meta"].get("cdate", now)
+            decayFrac = min(age / cls.time, 1.0)
+            
+            newData = data.copy()
+            
+            for k,v in newData.items():
+                if k == "meta":
+                    continue
+                else:
+                    if isinstance(v, str):
+                        m = list(v)
+                        for i in range(len(m)):
+                            if random.random() < decayFrac:
+                                m[i] = " "
+                        newData[k] = "".join(m)
+            return newData
+
+    class MetalPlate:
+        decayson = "time"
+        fake_chunks = 0
+        time = 31536000000  # ~1,000 years
+        @classmethod
+        def decay(cls, data):
+            return data
+
+    class HumanBrain:
+        decayson = "add"
+        fake_chunks = 1
+        time = 2240543592  # 71 years
+        @classmethod
+        def decay(cls, data):
+            now = time.time()
+            age = now -  data["meta"].get("cdate", now)
+            decayFrac = min(age / cls.time, 1.0)
+            
+            newData = data.copy()
+            
+            for k,v in newData.items():
+                if k == "meta":
+                    continue
+                else:
+                    if isinstance(v, str):
+                        m = v.split(" ")
+                        for i in range(len(m)):
+                            if random.random() < decayFrac:
+                                m[i] = ""
+                        newData[k] = " ".join(m)
+            return newData
+    class leFishe:
+        decayson = "time"
+        fake_chunks = 1
+        time = 60  # a fucking minute
+        @classmethod
+        def decay(cls, data):
+            now = time.time()
+            age = now -  data["meta"].get("cdate", now)
+            decayFrac = min(age / cls.time, 1.0)
+            
+            newData = data.copy()
+            
+            for k,v in newData.items():
+                if k == "meta":
+                    continue
+                else:
+                    if isinstance(v, str):
+                        m = v.split(" ")
+                        for i in range(len(m)):
+                            if random.random() < decayFrac:
+                                m[i] = "blub"
+                        newData[k] = " ".join(m)
+            return newData
+    class MotherfuckingAir:
+        fake_chunks = 0
+        time = 0
+        decayson = "time"
+        def decay(cls,data):
+            return data
+
+itemtypeeffects = {
+    "paper": ItemTypes.Paper,
+    "stoneTablet": ItemTypes.StoneTablet,
+    "metalPlate": ItemTypes.MetalPlate,
+    "brain": ItemTypes.HumanBrain,
+    "air": ItemTypes.MotherfuckingAir,
+    "leFishe": ItemTypes.leFishe,
+}
+
+
 def fakeprogress(rmin= 0.01, rmax= 0.3):
     progress = 0
     maxProgress = 100
@@ -94,7 +215,26 @@ def main():
     dbpath =  resolve_db(args.db)
     db = datalayer.get(dbpath)
     
-
+    # check deathtimes of datas
+    
+    for i in range(len(db["data"])):
+        if i not in db["deleted"]:
+            print(db["data"][i])
+            print( time.time() - db["data"][i]["meta"]["cdate"])
+            if time.time() - db["data"][i]["meta"]["cdate"] > db["data"][i]["meta"]["material"].time:
+                print(f"Item #{i} expired. Sorry.")
+                db["data"][i] = inflater.return_obf_bloat("expawred")
+                db["deleted"].append(i)
+                datalayer.store(db, dbpath)
+            else:
+                if args.command == "add" and db["data"][i]["meta"]["material"].decayson == "add":
+                    db["data"][i]= db["data"][i]["meta"]["material"].decay(db["data"][i])
+                if (args.command == "add" or args.command == "get" or args.command == "ls" or args.command == "rm") and db["data"][i]["meta"]["material"].decayson == "access":
+                    db["data"][i]= db["data"][i]["meta"]["material"].decay(db["data"][i])
+                if db["data"][i]["meta"]["material"].decayson == "time":
+                    db["data"][i]= db["data"][i]["meta"]["material"].decay(db["data"][i])
+            datalayer.store(db, dbpath)
+            
     # 2. Processing (Perform actions based on arguments)
 
         
@@ -114,6 +254,10 @@ def main():
 ]
 , headers=db["cols"]))
         case "add":
+            print("Choose an material type (write exactly)  ")
+            for key in itemtypeeffects.keys():
+                print(key)
+            itype = itemtypeeffects[input("> ")]
             fields = {}
             for kv in args.fields or []:
                 if "=" not in kv:
@@ -123,6 +267,11 @@ def main():
                     db["cols"].append(k)
                     sys.stderr.write(f"added one new column to the database: {k}\n")
                 fields[k]=v
+            fields["meta"] = {
+                "time": itype.time,
+                "material": itype,
+                "cdate": time.time()
+            }
             db["data"].append(fields)
             datalayer.store(db, dbpath)
             sys.stderr.write(f"Added one new item to the database. ID: {len(db['data']) - 1}\n")
