@@ -13,7 +13,7 @@ Self explanatory, but this being esoteric, these do fuck all
 Load the void telemetery dashboard. The dashboard is entirely static and just there because it is
 
 ### `add`
-Adds an item. You can specify an item type with `-t item`. Providng column values comes after `-f`, in key value pairs (anything after `-f` is expected to be a k=v pair)
+Adds an item. You can specify an item type with `-t item`. Providng column values comes after `-f`, in `key=value` pairs (anything after `-f` is expected to be a `k=v` pair)
 
 ### `get`
 Retrieve an item by its ID.
