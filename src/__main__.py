@@ -63,7 +63,7 @@ class ItemTypes:
 
     class MetalPlate:
         decayson = "time"
-        fake_chunks = 0
+        fake_chunks = 2
         time = 31536000000  # ~1,000 years
         @classmethod
         def decay(cls, data):
@@ -90,6 +90,29 @@ class ItemTypes:
                         for i in range(len(m)):
                             if random.random() < decayFrac:
                                 m[i] = ""
+                        newData[k] = " ".join(m)
+            return newData
+    class roadkill:
+        decayson = "time"
+        fake_chunks = 5
+        time = 1210000 # two weeks
+        @classmethod
+        def decay(cls, data):
+            now = time.time()
+            age = now -  data["meta"].get("cdate", now)
+            decayFrac = min(age / cls.time, 1.0)
+            
+            newData = data.copy()
+            
+            for k,v in newData.items():
+                if k == "meta":
+                    continue
+                else:
+                    if isinstance(v, str):
+                        m = v.split(" ")
+                        for i in range(len(m)):
+                            if random.random() < decayFrac:
+                                m[i] = "fly buzzes"
                         newData[k] = " ".join(m)
             return newData
     class leFishe:
@@ -129,6 +152,7 @@ itemtypeeffects = {
     "brain": ItemTypes.HumanBrain,
     "air": ItemTypes.MotherfuckingAir,
     "leFishe": ItemTypes.leFishe,
+    "roadkill": ItemTypes.roadkill
 }
 
 
@@ -199,6 +223,7 @@ def main():
 
     add_parser = subparsers.add_parser("cloudsyncPush", help="Push data to cloud")
     add_parser = subparsers.add_parser("cloudsyncPull", help="Pull data from cloud")
+    add_parser = subparsers.add_parser("vt", help="Log into the Void Telemetery Dashboard")
     add_parser = subparsers.add_parser("add", help="Add a name and value")
     add_parser.add_argument(
         "-f", "--fields",
@@ -206,7 +231,10 @@ def main():
         metavar="key=val",
         help="Fields to insert"
     )
-
+    add_parser.add_argument(
+        "-t", "--type",
+        help="one of the normal itemtypes"
+    )
     get_parser = subparsers.add_parser("get", help="Get the data associated with a id")
     get_parser.add_argument("id", help="ID to retrieve data for")
     
@@ -225,7 +253,7 @@ def main():
         if i not in db["deleted"]:
             if time.time() - db["data"][i]["meta"]["cdate"] > db["data"][i]["meta"]["material"].time:
                 print(f"Item #{i} expired. Sorry.")
-                db["data"][i] = inflater.return_obf_bloat("expawred")
+                db["data"][i] = "expawred"
                 db["deleted"].append(i)
                 datalayer.store(db, dbpath)
             else:
@@ -257,9 +285,12 @@ def main():
 , headers=db["cols"]))
         case "add":
             print("Choose an material type (write exactly)  ")
-            for key in itemtypeeffects.keys():
-                print(key)
-            itype = itemtypeeffects[input("> ")]
+            if args.type == None:
+                for key in itemtypeeffects.keys():
+                    print(key)
+                itype = itemtypeeffects[input("> ")]
+            else:
+                itype = itemtypeeffects[args.type]
             fields = {}
             for kv in args.fields or []:
                 if "=" not in kv:
@@ -294,13 +325,25 @@ def main():
             fakeprogress(rmin=0.001, rmax=0.01)
             print("\nComplete.")
             args.id = int(args.id)
-            db["data"][args.id] = inflater.return_obf_bloat("deletes your file cutely :3 nya paws at you")
+            db["data"][args.id] = "deletes your file cutely :3 nya paws at you"
             db["deleted"].append(args.id)
             datalayer.store(db, dbpath)
             print(f"Database was {startsize}B originally. Database now takes up {os.path.getsize(dbpath)}B. Your database size has changed by {((os.path.getsize(dbpath) - startsize) / startsize) * 100}% ")
         case "cloudsyncPush":
             print("Syncronising data to VDB Cloud...")
+            time.sleep(0.05)
+            print(datetime.datetime.now().strftime("--%Y-%m-%d %H:%M:%S--") + "   cloud.vacuumdb.com/push")
+            time.sleep(0.05)
+            print("Resolving cloud.vacuumdb.com (cloud.vacuumdb.com)... 420.69.420.69, 8008:8008:8008:6::200e")
+            time.sleep(0.05)
+            print("Connecting to cloud.vacuumdb.com (cloud.vacuumdb.com)|420.69.420.69|:420... connected.")
+            time.sleep(0.05)
+            print("Uploading database.vdb to https://cloud.vacuumdb.com/push")
+            time.sleep(0.05)
             fakeprogress()
+            time.sleep(0.05)
+            print()
+            print("HTTP request sent, awaiting response... 201 Created")
             print("")
             print("Data syncronised. Here is your datakey, you will need this to redownload your data.")
             print("[ "+ " ".join(diceware(n=15)) + " ]")
@@ -337,6 +380,34 @@ def main():
             print("Sorry, it looks like one of our interns let an LLM run amuck in the production database again")
             print("")
             print("")
+        case "vt":
+            print("Getting Voidtelemetery Key")
+            time.sleep(0.05)
+            print(datetime.datetime.now().strftime("--%Y-%m-%d %H:%M:%S--") + "   cloud.vacuumdb.com/voidtelemetary")
+            time.sleep(0.05)
+            print("Resolving cloud.vacuumdb.com (cloud.vacuumdb.com)... 420.69.420.69, 8008:8008:8008:6::200e")
+            time.sleep(0.05)
+            print("Connecting to cloud.vacuumdb.com (cloud.vacuumdb.com)|420.69.420.69|:420... connected.")
+            time.sleep(0.05)
+            print("HTTP request sent, awaiting response... 420 OK")
+            time.sleep(0.05)
+            print("Length: 69Kib [text/plain]")
+            time.sleep(0.05)
+            print("Saving to: /dev/null")
+            fakeprogress()
+            print("")
+            time.sleep(0.05)
+            print(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S") + " (69Gib/s) - 'key.vt' saved [69420]")
+            print("")
+            time.sleep(0.05)
+            print("Your void telemetary key")
+            vtKa = diceware(n=6)
+            vtk = "".join(w.capitalize() for w in vtKa)
+            vtk = "http://vacuumdb.pages.dev/voidtelemetery/dashboard#/"+vtk
+            print("╔═"+("═"*len(vtk))+"═╗")
+            print("║ "+vtk+" ║")
+            print("╚═"+("═"*len(vtk))+"═╝")
+            
         case _:
             parser.print_help()    
 

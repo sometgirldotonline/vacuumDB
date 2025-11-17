@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Void Telemetry</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+</head>
+
+<body class="bg-base-200">
+
+    <div class="flex h-screen">
+
+        <!-- Sidebar -->
+        <aside class="w-64 bg-base-100 shadow-md border-r border-base-300 flex flex-col">
+
+            <div class="p-6 border-b border-base-300">
+                <h1 class="text-2xl font-bold">vacuumDB</h1>
+                <p class="text-sm opacity-60">Void Telemetry</p>
+            </div>
+
+            <nav class="flex-1 p-4">
+                <ul class="menu bg-base-100 rounded-box">
+                    <li><a onclick="alert('Not Implemented!')" class="font-medium">Dashboard</a></li>
+                    <li><a onclick="alert('Not Implemented!')">Metrics</a></li>
+                    <li><a onclick="alert('Not Implemented!')">Quantum Logs</a></li>
+                    <li><a onclick="alert('Not Implemented!')">Settings</a></li>
+                </ul>
+            </nav>
+
+            <div class="p-4 border-t border-base-300">
+                <button class="btn btn-outline btn-sm w-full" href="/">Logout</button>
+            </div>
+
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 overflow-y-auto">
+
+            <!-- Content Cards -->
+            <section class="p-10">
+                <h1 class="text-3xl font-bold mb-8">Dashboard</h1>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+
+                    <div class="card bg-base-100 shadow-md border border-base-300">
+                        <div class="card-body text-center">
+                            <h3 class="text-2xl font-bold mb-8 text-center">Vacuum Integrity</h3>
+                            <div class="mb-8 radial-progress mx-auto text-red-500 border-red-500 border-4" style="--value:0;"
+                                aria-valuenow="0" role="progressbar">0%</div>
+                            <h3 class="text-2xl font-bold mb-8 text-center flash text-red-500">Vacuum collapse imminent
+                            </h3>
+
+                        </div>
+                    </div>
+
+                    <div class="card bg-base-100 shadow-md border border-base-300">
+                        <div class="card-body text-center">
+                            <h3 class="text-2xl font-bold mb-8 text-center">Entropy Concentration</h3>
+                            <div class="mb-8 radial-progress mx-auto text-purple-500" style="--value:69;"
+                                aria-valuenow="0" role="progressbar">69%</div>
+
+                        </div>
+                    </div>
+
+                    <div class="card bg-base-100 shadow-md border border-base-300">
+                        <div class="card-body">
+                        </div>
+                    </div>
+
+                </div>
+
+            </section>
+        </main>
+        <style>
+            .flash {
+                animation-name: flash;
+                animation-duration: 0.3s;
+                animation-direction: alternate;
+                animation-iteration-count: infinite; 
+            }
+
+            @keyframes flash {
+                from {
+                    scale:1.3;
+                    opacity: 1;
+                }
+
+                to {
+                    scale:1;
+                    opacity: 0.8;
+                }
+            }
+        </style>
+    </div>
+
+</body>
+
+</html>

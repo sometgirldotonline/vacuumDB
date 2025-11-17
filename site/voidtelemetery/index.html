@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>vacuumDB: Void Telemetery</title>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+</head>
+
+<body class="bg-base-100" style="overflow: hidden;">
+    <!-- Navbar -->
+    <nav class="navbar bg-base-100 shadow-sm px-4">
+        <div class="flex-1">
+            <a href="/voidtelemetery" class="btn btn-ghost text-xl normal-case">vacuumDB Void Telemetery</a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero min-h-screen">
+        <div class="mockup-window border border-base-300 w-lg">
+            <div class="grid place-content-center border-t border-base-300 h-80">
+                <div class="card w-96 bg-base-100 card-xl shadow-sm">
+                    <div class="card-body">
+                        <h2 class="card-title">Log In</h2>
+                        <p>
+                            <label for="u">Username (enterprise only)</label>
+                            <input type="text" placeholder="Username" id="u" class="input" />
+                            <label for="k">Login key (enterprise only)</label>
+                            <input type="text" placeholder="Key" id="k" class="input" />
+                        </p>
+                        <div class="justify-end card-actions">
+                            <button class="btn btn-primary" onclick="alert(`No you don&apos;t`)">Enter</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</body>
+
+</html>
