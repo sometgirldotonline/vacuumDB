@@ -28,7 +28,7 @@ jobs:
 
     - name: Build executable
       run: |
-        pyinstaller --onefile src/__main__.py --name vacuumdb
+        pyinstaller --onefile src/__main__.py --name vacuumdb --hidden-import tabulate --hidden-import dicewarepy
       shell: bash
 
     - name: Upload artifact
