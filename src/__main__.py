@@ -11,9 +11,9 @@ import tabulate
 import random 
 from dicewarepy import diceware
 import time
+
+
 # metadatas
-
-
 class ItemTypes:
     class Paper:
         decayson = "time"
