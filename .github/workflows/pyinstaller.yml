@@ -28,11 +28,11 @@ jobs:
 
     - name: Build executable
       run: |
-        pyinstaller --onefile src/__main__.py --name myapp
+        pyinstaller --onefile src/__main__.py --name vacuumdb
       shell: bash
 
     - name: Upload artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
-        name: myapp-${{ runner.os }}
-        path: dist/myapp*
+        name: vacuumdb-${{ runner.os }}
+        path: dist/vacuumdb*
