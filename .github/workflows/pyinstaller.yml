@@ -2,7 +2,7 @@ name: Build CLI App (this workflow written by GPT)
 
 on:
   push:
-    branches: [main]
+    branches: [master]
   pull_request:
 
 jobs:
