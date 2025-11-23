@@ -2,7 +2,8 @@
 An esoteric database that instead of aiming for compression and functional simplicity, goes the complete other way.
 It currently has no bindings for programming languages yet, it is interacted entireley in the terminal.
 Call the script with any of the following arguments
-
+## using the db
+download the repo, go to `src` and run the `__main__.py` file, thats the cli
 ### `ls`
 show all the data from the table, you can add --json to get a json output
 
